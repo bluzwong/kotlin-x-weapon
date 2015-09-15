@@ -67,6 +67,9 @@ public fun T.inflat<T: Context>(layoutResId: Int, parent: ViewGroup? = null, att
 public fun startActivity(activity:Activity, cls:Class<*>) {
     activity startActivity Intent(activity, cls)
 }
+public fun Activity.startActivityEx(cls:Class<*>) {
+    this startActivity Intent(this, cls)
+}
 
 public fun Context.getAccessibilityManager(): AccessibilityManager = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
 public fun Context.getAccountManager(): AccountManager = getSystemService(Context.ACCOUNT_SERVICE) as AccountManager
