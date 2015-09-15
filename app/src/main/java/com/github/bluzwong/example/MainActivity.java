@@ -5,7 +5,6 @@ import com.github.bluzwong.kotlin_x_weapon.Kotlin_x_weaponPackage;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import com.github.bluzwong.example.R;
 import com.github.bluzwong.kotlin_x_weapon.SwipeBackActivityHelper;
 
 import java.util.Random;

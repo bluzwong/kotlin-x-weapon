@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import com.github.bluzwong.kotlin_x_weapon.R
 
 /**
  * Created by Bruce-Home on 2015/9/9.

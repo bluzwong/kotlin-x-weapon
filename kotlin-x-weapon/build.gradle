@@ -56,29 +56,88 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'kotlin-x-weapon'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
-    publishedGroupId = 'com.github.bluzwong'
-    libraryName = 'kotlin-x-weapon'
-    artifact = 'kotlin-x-weapon'
+group = 'com.github.bluzwong'
+version = '0.9.0'
+def siteUrl = 'https://github.com/bluzwong/kotlin-x-weapon'
+def gitUrl = 'https://github.com/bluzwong/kotlin-x-weapon'
 
-    libraryDescription = 'utils for android'
-
-    siteUrl = 'https://github.com/bluzwong/kotlin-x-weapon'
-    gitUrl = 'https://github.com/bluzwong/kotlin-x-weapon.git'
-
-    libraryVersion = '0.9.0'
-
-    developerId = 'bluzwong'
-    developerName = 'zj Wong'
-    developerEmail = 'brucewangzhijie@163.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'kotlin-x-weapon'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'bluzwong'
+                        name 'zj Wong'
+                        email 'brucewangzhijie@163.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
 }
 
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task classesJar(type: Jar) {
+    from "$buildDir/intermediates/classes/release"
+}
+
+artifacts {
+    archives classesJar
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    user = properties.getProperty('bintray.user')
+    key = properties.getProperty('bintray.apikey')
+
+    configurations = ['archives']
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'kotlin-x-weapon'
+        desc = 'kotlin-x-weapon'
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ['Apache-2.0']
+        labels = ['kotlin', 'android', 'library']
+        publicDownloadNumbers = true
+    }
+}
+repositories {
+    mavenCentral()
+}
