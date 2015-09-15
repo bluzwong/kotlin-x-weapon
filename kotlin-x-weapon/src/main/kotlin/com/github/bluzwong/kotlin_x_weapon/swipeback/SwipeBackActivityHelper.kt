@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.github.bluzwong.kotlin_x_weapon.R
+import com.github.bluzwong.kotlin_x_weapon.swipeback.SlideView
 
 /**
  * Created by Bruce-Home on 2015/9/15.
  */
 public class SwipeBackActivityHelper(val activity: Activity) {
+    var slideView:SlideView? = null
     public fun initSwipeBack() {
-        val slidingPaneLayout = SlidingPaneLayout(activity)
+        val slidingPaneLayout = SlideView(activity)
+        slideView = slidingPaneLayout
         val field_overHandSize = javaClass<SlidingPaneLayout>().getDeclaredField("mOverhangSize")
         field_overHandSize setAccessible true
         field_overHandSize.set(slidingPaneLayout, 0)
@@ -47,5 +50,22 @@ public class SwipeBackActivityHelper(val activity: Activity) {
     }
     public fun onSwipeFinish() {
         activity.overridePendingTransition(0, R.anim.slide_out_right_slow);
+    }
+
+    public fun addTouchOn(viewGroup:ViewGroup) {
+        slideView?.addViewGroup(viewGroup)
+    }
+
+    public fun removeTouchOn(viewGroup:ViewGroup) {
+        slideView?.removeViewGroup(viewGroup)
+    }
+
+    public fun removeAllTouchOn() {
+        slideView?.removeAllViewGroup()
+    }
+
+    public fun disableFor200Ms() {
+        slideView?.setEnabled(false)
+        slideView?.postDelayed({ slideView?.setEnabled(true) }, 1000)
     }
 }
