@@ -89,10 +89,10 @@ vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
     // 6. when some views conflict with swipe back , you should do these, for example:
     override fun onPageSelected(position: Int) {
         if (position != 0) {
-            // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
+            // if the current view pager is not the first, make 'vp' receive touch event. so : addTouchOn(vp);
             addTouchOn(vp)
         } else {
-            // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+            // the current return to the first one, make 'swipe back' receive touch event. so: removeTouchOn(vp);
             // also can helper.removeAllTouchOn();
             removeTouchOn(vp)
         }
@@ -123,5 +123,12 @@ vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     
     @Override
     public void onPageScrollStateChanged(int state) {}
+```
+ Dependence
+-----------
+```groovy
+dependencies {
+    compile 'com.github.bluzwong:kotlin-x-weapon:0.9.1@aar'
+}
 ```
 ######to be continued...

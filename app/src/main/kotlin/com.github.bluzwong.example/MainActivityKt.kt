@@ -15,7 +15,7 @@ import java.util.*
 /**
  * Created by Bruce-Home on 2015/9/15.
  */
-// ↓↓↓↓↓↓ 1.implements this interface
+//                                                 ↓↓↓↓↓↓ 1.implements this interface
 public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
     override fun provideActivity(): Activity {
         return this
@@ -56,10 +56,10 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
             // 6. when some views conflict with swipe back , you should do these, for example:
             override fun onPageSelected(position: Int) {
                 if (position != 0) {
-                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
+                    // if the current view pager is not the first, make 'vp' receive touch event. so : addTouchOn(vp);
                     addTouchOn(vp)
                 } else {
-                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+                    // the current return to the first one, make 'swipe back' receive touch event. so: removeTouchOn(vp);
                     // also can helper.removeAllTouchOn();
                     removeTouchOn(vp)
                 }
@@ -74,10 +74,5 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
         // 4.show animation when back
         onSwipeFinish()
         // 5.set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
-    }
-
-    override fun onDestroy() {
-        super<AppCompatActivity>.onDestroy()
-//        removeAllTouchOn()
     }
 }
