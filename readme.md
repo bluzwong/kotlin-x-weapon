@@ -77,54 +77,51 @@ Kotlin:
 // your code ... in onCreate()
 val vp = findViewById(R.id.vp) as ViewPager
 vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-                //throw UnsupportedOperationException()
-                // your code
-            }
+    override fun onPageScrollStateChanged(state: Int) {
+        //throw UnsupportedOperationException()
+        // your code
+    }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                //throw UnsupportedOperationException()
-                // your code
-            }
-            // 6. when some views conflict with swipe back , you should do these, for example:
-            override fun onPageSelected(position: Int) {
-                if (position != 0) {
-                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
-                    addTouchOn(vp)
-                } else {
-                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
-                    // also can helper.removeAllTouchOn();
-                    removeTouchOn(vp)
-                }
-                // your code
-            }
-        })
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        //throw UnsupportedOperationException()
+        // your code
+    }
+    // 6. when some views conflict with swipe back , you should do these, for example:
+    override fun onPageSelected(position: Int) {
+        if (position != 0) {
+            // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
+            addTouchOn(vp)
+        } else {
+            // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+            // also can helper.removeAllTouchOn();
+            removeTouchOn(vp)
+        }
+        // your code
+    }
+})
 ```
 
 Java:
 ```java
 // your code ... in onCreate()
 vp = (ViewPager) findViewById(R.id.vp);
-        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
-            @Override
-            public void onPageSelected(int position) {
-                // 5. when some views conflict with swipe back , you should do these, for example:
-                if (position != 0) {
-                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
-                    helper.addTouchOn(vp);
-                } else {
-                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
-                    // also can helper.removeAllTouchOn();
-                    helper.removeTouchOn(vp);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
-        });
-```
+    @Override
+    public void onPageSelected(int position) {
+        if (position != 0) {
+            // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
+            helper.addTouchOn(vp);
+        } else {
+            // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+            // also can helper.removeAllTouchOn();
+            helper.removeTouchOn(vp);
+        }
+    }
+    
+    @Override
+    public void onPageScrollStateChanged(int state) {}
 
 ######to be continued...
