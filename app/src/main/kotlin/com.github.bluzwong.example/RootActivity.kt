@@ -12,7 +12,7 @@ public class RootActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_root)
         findViewById(R.id.btn).setOnClickListener {
-            startActivityEx(javaClass<MainActivityKt>())
+            startActivityEx(javaClass<MainActivity>())
         }
     }
 }

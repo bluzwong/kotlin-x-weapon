@@ -121,7 +121,7 @@ vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 ###### Gradle:
 ```groovy
 dependencies {
-    compile 'com.github.bluzwong:kotlin-x-weapon:0.9.1@aar'
+    compile 'com.github.bluzwong:kotlin-x-weapon:0.9.2@aar'
 }
 ```
 ######to be continued...
