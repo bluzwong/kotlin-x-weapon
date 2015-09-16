@@ -13,24 +13,17 @@ import java.util.*
  */
 public class SlideView(context: Context?) : SlidingPaneLayout(context) {
     private val views: MutableList<ViewGroup> = ArrayList<ViewGroup>()
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        when (ev?.getAction()) {
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.getAction()) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                Log.i("bruce", "action down move" + views.count())
                 views forEach {
+                    // important!!! make slide swipe not intercepts touch event
                     it.requestDisallowInterceptTouchEvent(true)
                 }
             }
-
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-
-                Log.i("bruce", "action on cancel " + views.count())
-                views forEach {
-                    it.requestDisallowInterceptTouchEvent(false)
-                }
-            }
         }
-        return super.onInterceptTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
     }
 
     public fun addViewGroup(view:ViewGroup) {

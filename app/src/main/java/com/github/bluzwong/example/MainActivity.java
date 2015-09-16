@@ -55,13 +55,10 @@ public class MainActivity extends AppCompatActivity {
                 // if the current view pager is not the first, i want 'vp' receive touch event. so : helper.addTouchOn(vp);
                 if (position != 0) {
                     helper.addTouchOn(vp);
-                    Log.i("bruce", vp + " ad touch on");
                 } else {
                     // the current return to the first one, i want 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
                     // also can helper.removeAllTouchOn();
                     helper.removeTouchOn(vp);
-
-                    Log.i("bruce", vp + " remove touch on");
                 }
             }
 
@@ -69,12 +66,6 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {}
         });
         vp.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//            helper.disableFor200Ms();
     }
 
     @Override
@@ -98,11 +89,4 @@ public class MainActivity extends AppCompatActivity {
 
         return "#" + r + g + b;
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        helper.removeAllTouchOn();
-    }
-
 }
