@@ -30,6 +30,8 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
         findViewById(R.id.btn) setOnClickListener {
             startActivityEx(javaClass<MainActivityKt>())
         }
+        // 3.helper init
+        initSwipeBack()
 
         val views: MutableList<View> = ArrayList<View>()
 
@@ -44,32 +46,34 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
                 //throw UnsupportedOperationException()
+                // your code
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 //throw UnsupportedOperationException()
+                // your code
+            }
+            // 6. when some views conflict with swipe back , you should do these, for example:
+            override fun onPageSelected(position: Int) {
                 if (position != 0) {
+                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
                     addTouchOn(vp)
                 } else {
+                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+                    // also can helper.removeAllTouchOn();
                     removeTouchOn(vp)
                 }
+                // your code
             }
-
-            override fun onPageSelected(position: Int) {
-                //throw UnsupportedOperationException()
-            }
-
         })
         vp.setAdapter(adapter)
-        // 3.helper init
-        initSwipeBack()
     }
 
     override fun finish() {
         super<AppCompatActivity>.finish()
         // 4.show animation when back
         onSwipeFinish()
-        // last of all set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
+        // 5.set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
     }
 
     override fun onDestroy() {

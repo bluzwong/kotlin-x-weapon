@@ -16,21 +16,16 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
     override fun onCreate(savedInstanceState: Bundle?) {
         super<AppCompatActivity>.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         // 3.helper init
         initSwipeBack()
-
-        findViewById(R.id.background).setBackgroundColor(Color.parseColor(MainActivity.getRandColorCode()))
-        findViewById(R.id.btn) setOnClickListener {
-            startActivityEx(javaClass<MainActivityKt>())
-        }
+        // your other code...
     }
 
     override fun finish() {
         super<AppCompatActivity>.finish()
         // 4.show animation when back
         onSwipeFinish()
-        // last of all set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
+        // 5.set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
     }
 }
 ```
@@ -50,12 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 2.helper init
         helper.initSwipeBack();
-        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Kotlin_x_weaponPackage.startActivity(MainActivity.this, MainActivity.this.getClass());
-            }
-        });
+        // your other code
     }
 
     @Override
@@ -63,9 +53,78 @@ public class MainActivity extends AppCompatActivity {
         super.finish();
         // 3.show animation when back
         helper.onSwipeFinish();
-        // last of all set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
+        // 4.set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
     }
 }
-
 ```
 
+######For best appearance, use transparent theme
+AndroidManifest.xml:
+```xml
+<activity android:name=".MainActivityKt"
+          android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
+        >
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+```
+######Works with ViewPager or others
+
+Kotlin:
+```kotlin
+// your code ... in onCreate()
+val vp = findViewById(R.id.vp) as ViewPager
+vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+                //throw UnsupportedOperationException()
+                // your code
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                //throw UnsupportedOperationException()
+                // your code
+            }
+            // 6. when some views conflict with swipe back , you should do these, for example:
+            override fun onPageSelected(position: Int) {
+                if (position != 0) {
+                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
+                    addTouchOn(vp)
+                } else {
+                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+                    // also can helper.removeAllTouchOn();
+                    removeTouchOn(vp)
+                }
+                // your code
+            }
+        })
+```
+
+Java:
+```java
+// your code ... in onCreate()
+vp = (ViewPager) findViewById(R.id.vp);
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                // 5. when some views conflict with swipe back , you should do these, for example:
+                if (position != 0) {
+                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
+                    helper.addTouchOn(vp);
+                } else {
+                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
+                    // also can helper.removeAllTouchOn();
+                    helper.removeTouchOn(vp);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
+```
+
+######to be continued...
