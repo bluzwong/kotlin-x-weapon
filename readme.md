@@ -1,11 +1,10 @@
 # Kotlin X Weapon
  Kotlin x weapon is a library of extension functions for android. What is [Kotlin](https://github.com/JetBrains/kotlin)?
  ![1](./screenshot.jpg)
- Example
------------
 
-####Swipe back finish activity
-Kotlin:
+##Example
+###Swipe back finish activity
+###### Kotlin:
 ```kotlin
                                                     // ↓↓↓↓↓↓ 1.implements this interface
 public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
@@ -30,8 +29,7 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
 }
 ```
 
-
-Java:
+###### Java:
 ```java
 
 public class MainActivity extends AppCompatActivity {
@@ -58,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-######For best appearance, use transparent theme
-AndroidManifest.xml:
+####For best appearance, use transparent theme
+###### AndroidManifest.xml:
 ```xml
 <activity android:name=".MainActivityKt"
           android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
@@ -70,9 +68,9 @@ AndroidManifest.xml:
     </intent-filter>
 </activity>
 ```
-######Works with ViewPager or others
+####Works with ViewPager or others
 
-Kotlin:
+###### Kotlin:
 ```kotlin
 // your code ... in onCreate()
 val vp = findViewById(R.id.vp) as ViewPager
@@ -101,7 +99,7 @@ vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 })
 ```
 
-Java:
+###### Java:
 ```java
 // your code ... in onCreate()
 vp = (ViewPager) findViewById(R.id.vp);
@@ -124,8 +122,9 @@ vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     @Override
     public void onPageScrollStateChanged(int state) {}
 ```
- Dependence
------------
+## Dependence
+
+###### Gradle:
 ```groovy
 dependencies {
     compile 'com.github.bluzwong:kotlin-x-weapon:0.9.1@aar'
