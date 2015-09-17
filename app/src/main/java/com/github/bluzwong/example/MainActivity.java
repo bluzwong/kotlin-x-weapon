@@ -2,7 +2,6 @@ package com.github.bluzwong.example;
 
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import com.github.bluzwong.kotlin_x_weapon.Kotlin_x_weaponPackage;
 import android.support.v7.app.AppCompatActivity;
@@ -53,12 +52,11 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 // 5. when some views conflict with swipe back , you should do these, for example:
                 if (position != 0) {
-                    // if the current view pager is not the first, make 'vp' receive touch event. so : helper.addTouchOn(vp);
-                    helper.addTouchOn(vp);
+                    // if the current view page is not the first, make 'vp' receive touch event.
+                    helper.disableSwipeBack();
                 } else {
-                    // the current return to the first one, make 'swipe back' receive touch event. so: helper.removeTouchOn(vp);
-                    // also can helper.removeAllTouchOn();
-                    helper.removeTouchOn(vp);
+                    // the current page return to the first one, make 'swipe back' receive touch event.
+                    helper.enableSwipeBack();
                 }
             }
 

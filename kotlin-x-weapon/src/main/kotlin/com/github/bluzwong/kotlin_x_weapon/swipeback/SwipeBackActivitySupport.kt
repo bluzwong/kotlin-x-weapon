@@ -62,24 +62,18 @@ public interface SwipeBackActivitySupport {
         slideView.openPane()
     }
 
-    public fun addTouchOn(viewGroup: ViewGroup) {
+    public fun disableSwipeBack() {
         var decor = provideActivity().getWindow().getDecorView() as ViewGroup
         var decorChild = (decor getChildAt 0) as LinearLayout
         val slideView = decorChild.getChildAt(1) as SlideView
-        slideView.addViewGroup(viewGroup)
+        slideView.disallowIntercept = true
     }
 
-    public fun removeTouchOn(viewGroup: ViewGroup) {
+    public fun enableSwipeBack() {
         var decor = provideActivity().getWindow().getDecorView() as ViewGroup
         var decorChild = (decor getChildAt 0) as LinearLayout
         val slideView = decorChild.getChildAt(1) as SlideView
-        slideView.removeViewGroup(viewGroup)
+        slideView.disallowIntercept = false
     }
 
-    public fun removeAllTouchOn() {
-        var decor = provideActivity().getWindow().getDecorView() as ViewGroup
-        var decorChild = (decor getChildAt 0) as LinearLayout
-        val slideView = decorChild.getChildAt(1) as SlideView
-        slideView.removeAllViewGroup()
-    }
 }

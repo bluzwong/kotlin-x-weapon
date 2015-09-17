@@ -56,12 +56,11 @@ public class MainActivityKt : AppCompatActivity(), SwipeBackActivitySupport {
             // 6. when some views conflict with swipe back , you should do these, for example:
             override fun onPageSelected(position: Int) {
                 if (position != 0) {
-                    // if the current view pager is not the first, make 'vp' receive touch event. so : addTouchOn(vp);
-                    addTouchOn(vp)
+                    // if the current view page is not the first, make 'vp' receive touch event.disableSwipeBack();
+                    disableSwipeBack()
                 } else {
-                    // the current return to the first one, make 'swipe back' receive touch event. so: removeTouchOn(vp);
-                    // also can helper.removeAllTouchOn();
-                    removeTouchOn(vp)
+                    // the current page return to the first one, make 'swipe back' receive touch event.enableSwipeBack();
+                    enableSwipeBack()
                 }
                 // your code
             }
