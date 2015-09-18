@@ -1,9 +1,10 @@
 # Kotlin X Weapon
  Kotlin x weapon is a library of extension functions for android. What is [Kotlin](https://github.com/JetBrains/kotlin)?
- ![1](./swipeback.gif)
+
 [Download Demo] (https://github.com/bluzwong/kotlin-x-weapon/releases/download/v0.9.1/example.apk)
 ##Example
 ###Swipe back finish activity
+ ![1](./swipeback.gif)
 ###### Kotlin:
 ```kotlin
                                                     // ↓↓↓↓↓↓ 1.implements this interface
@@ -114,6 +115,26 @@ vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     @Override
     public void onPageScrollStateChanged(int state) {}
 ```
+###Extensions for RecyclerView
+ ![2](./rec.gif)
+
+###### Xml:
+use com.github.bluzwong.kotlin_x_weapon.XRecyclerView instead of RecyclerView
+then add android:layoutAnimation="@anim/grid_layout_animation_random_bottom"
+```xml
+<com.github.bluzwong.kotlin_x_weapon.XRecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layoutAnimation="@anim/grid_layout_animation_random_bottom"
+                />
+```
+
+start animation when refresh
+(startScheduleLayoutAnimation() is a extension function for RecyclerView ,kotlin only.No java use for now)
+```kotlin
+xRecyclerView.startScheduleLayoutAnimation()
+```
+
 ## Dependence
 
 ###### Gradle:
