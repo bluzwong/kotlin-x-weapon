@@ -3,7 +3,6 @@ package com.github.bluzwong.kotlin_x_weapon
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ProgressBar
-import com.github.bluzwong.kotlin_x_weapon.R
 
 /**
  * Created by wangzhijie@wind-mobi.com on 2015/9/9.

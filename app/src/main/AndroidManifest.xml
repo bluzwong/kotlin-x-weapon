@@ -16,9 +16,10 @@
         <activity android:name="com.github.bluzwong.example.MainActivity"
                 android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
                 />
-        <activity android:name=".MainActivityKt"
+        <activity android:name=".swipeback.MainActivityKt"
                   android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
                 />
+        <activity android:name=".recyclerview.XRecyclerViewActivity"/>
     </application>
 
 </manifest>

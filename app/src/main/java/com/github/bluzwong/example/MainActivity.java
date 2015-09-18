@@ -3,6 +3,7 @@ package com.github.bluzwong.example;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import com.github.bluzwong.example.swipeback.VPAdapter;
 import com.github.bluzwong.kotlin_x_weapon.Kotlin_x_weaponPackage;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

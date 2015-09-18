@@ -2,6 +2,7 @@ package com.github.bluzwong.example
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.github.bluzwong.example.recyclerview.XRecyclerViewActivity
 import com.github.bluzwong.kotlin_x_weapon.startActivityEx
 
 /**
@@ -13,6 +14,9 @@ public class RootActivity:AppCompatActivity() {
         setContentView(R.layout.layout_root)
         findViewById(R.id.btn).setOnClickListener {
             startActivityEx(javaClass<MainActivity>())
+        }
+        findViewById(R.id.btn2).setOnClickListener {
+            startActivityEx(javaClass<XRecyclerViewActivity>())
         }
     }
 }

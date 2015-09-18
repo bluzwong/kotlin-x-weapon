@@ -4,6 +4,7 @@ import android.support.v4.view.GestureDetectorCompat
 import android.support.v7.widget.RecyclerView
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.ViewGroup
 
 /**
  * Created by wangzhijie@wind-mobi.com on 2015/9/2.
@@ -14,6 +15,13 @@ fun RecyclerView.setOnItemClickListener(listener:(RecyclerView.ViewHolder) -> Un
 }
 fun RecyclerView.setOnItemLongPressListener(listener:(RecyclerView.ViewHolder) -> Unit) {
     addOnItemTouchListener (ClickItemLongPressListener(this, listener))
+}
+
+fun RecyclerView.startScheduleLayoutAnimation():Unit {
+    val parent = this.getParent() as ViewGroup
+    parent.removeView(this)
+    parent.addView(this)
+    this.scheduleLayoutAnimation()
 }
 
 class ClickItemTouchListener(val recycler: RecyclerView, val listener:(RecyclerView.ViewHolder) -> Unit): RecyclerView.OnItemTouchListener, GestureDetector.SimpleOnGestureListener() {

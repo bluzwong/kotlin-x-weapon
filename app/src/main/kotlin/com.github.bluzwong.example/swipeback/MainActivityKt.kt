@@ -1,4 +1,4 @@
-package com.github.bluzwong.example
+package com.github.bluzwong.example.swipeback
 
 import android.app.Activity
 import android.graphics.Color
@@ -7,6 +7,8 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
+import com.github.bluzwong.example.MainActivity
+import com.github.bluzwong.example.R
 import com.github.bluzwong.kotlin_x_weapon.SwipeBackActivityHelper
 import com.github.bluzwong.kotlin_x_weapon.SwipeBackActivitySupport
 import com.github.bluzwong.kotlin_x_weapon.startActivityEx

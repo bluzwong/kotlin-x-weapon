@@ -1,4 +1,4 @@
-package com.github.bluzwong.example
+package com.github.bluzwong.example.swipeback
 
 import android.support.v4.view.PagerAdapter
 import android.view.View
