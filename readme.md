@@ -141,7 +141,7 @@ xRecyclerView.startScheduleLayoutAnimation()
 ###### Gradle:
 ```groovy
 dependencies {
-    compile 'com.github.bluzwong:kotlin-x-weapon:0.9.3@aar'
+    compile 'com.github.bluzwong:kotlin-x-weapon:0.9.4@aar'
 }
 ```
 ######to be continued...
