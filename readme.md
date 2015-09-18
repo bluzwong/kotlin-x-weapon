@@ -129,8 +129,9 @@ then add android:layoutAnimation="@anim/grid_layout_animation_random_bottom"
                 />
 ```
 
-start animation when refresh
+start animation when refresh instead of notifyDataSetChanged()
 (startScheduleLayoutAnimation() is a extension function for RecyclerView ,kotlin only.No java use for now)
+###### Kotlin:
 ```kotlin
 xRecyclerView.startScheduleLayoutAnimation()
 ```
