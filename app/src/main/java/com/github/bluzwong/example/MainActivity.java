@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.github.bluzwong.example.swipeback.VPAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import com.github.bluzwong.swipeback.SwipeBackActivityHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     // 1.get helper
@@ -29,17 +31,22 @@ public class MainActivity extends AppCompatActivity {
         helper.setDebuggable(true);
         helper.init(this);
         initViews();
-        App.requestQueue.add(new StringRequest("http://www.baidu.com", new Response.Listener<String>() {
+        new Thread(new Runnable() {
             @Override
-            public void onResponse(String response) {
-                Log.i("volley-test", response);
+            public void run() {
+                RequestFuture<String> requestFuture = RequestFuture.newFuture();
+                App.requestQueue.add(new StringRequest("http://www.baidu.com", requestFuture, requestFuture));
+                try {
+                    String response = requestFuture.get();
+                    Log.i("volley sync test", response);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }));
+        }).start();
+
     }
 
     private void initViews() {
