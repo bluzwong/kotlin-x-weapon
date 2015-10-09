@@ -12,14 +12,14 @@ import com.github.bluzwong.kotlin_x_weapon.R
  * Created by wangzhijie@wind-mobi.com on 2015/9/16.
  */
 public class LeftView(context: Context?) : View(context) {
-    val leftShadow = getResources().getDrawable(R.drawable.shadow_left_code)
+    val leftShadow = resources.getDrawable(R.drawable.shadow_left_code)
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
         canvas.save()
-        val right = getWidth()
+        val right = width
         val left = right - 100
         val top = 0
-        val bot = getHeight()
+        val bot = height
         leftShadow.setBounds(left, top, right, bot)
         leftShadow.draw(canvas)
         canvas.restore()

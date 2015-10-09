@@ -25,19 +25,19 @@ import java.util.*
 public class SwipeBackActivityHelper(val activity: Activity) {
     private var fileName = ""
     public  fun initSwipeBack() {
-        val hash = activity.getIntent().getIntExtra("^^hash$$", 0)
+        val hash = activity.intent.getIntExtra("^^hash$$", 0)
         if (hash != 0) {
             fileName = getFileName(activity, hash)
         }
         val slidingPaneLayout = SlideView(activity)
-        val field_overHandSize = javaClass<SlidingPaneLayout>().getDeclaredField("mOverhangSize")
+        val field_overHandSize = SlidingPaneLayout::class.java.getDeclaredField("mOverhangSize")
         field_overHandSize setAccessible true
         field_overHandSize.set(slidingPaneLayout, 0)
         var leftView = SwipeLeftView(activity)
         leftView setLayoutParams ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         slidingPaneLayout setPanelSlideListener object : SlidingPaneLayout.PanelSlideListener {
             override fun onPanelSlide(panel: View?, slideOffset: Float) {
-                if (!fileName.equals("") && leftView.getTag() == null) {
+                if (!fileName.isNullOrEmpty() && leftView.tag == null) {
                     //                    fileName.i("img")
                     var bitMap = cachedScreenShot.get(fileName)
                     if (bitMap == null) {
@@ -50,38 +50,38 @@ public class SwipeBackActivityHelper(val activity: Activity) {
                     }
                     if (bitMap != null) {
                         leftView.imgView.setImageBitmap(bitMap)
-                        leftView.setTag(1)
+                        leftView.tag = 1
                     }
 
                 }
-                leftView.shadowView.setX(panel!!.getX() - leftView.getWidth())
+                leftView.shadowView.x = panel!!.x - leftView.width
             }
 
             override fun onPanelClosed(panel: View?) {
                 leftView.imgView.setImageBitmap(null)
-                leftView.setTag(null)
+                leftView.tag = null
                 //                "bitmap released ".i(swipeCount)
             }
 
             override fun onPanelOpened(panel: View?) {
-                cleanScreenShot(fileName, activity.getApplicationContext())
+                cleanScreenShot(fileName, activity.applicationContext)
                 activity.finish()
                 activity.overridePendingTransition(0, R.anim.slide_out_right)
             }
         }
-        slidingPaneLayout setSliderFadeColor activity.getResources().getColor(android.R.color.transparent)
+        slidingPaneLayout setSliderFadeColor activity.resources.getColor(android.R.color.transparent)
 
         slidingPaneLayout.addView(leftView, 0)
-        var decor = activity.getWindow().getDecorView() as ViewGroup
+        var decor = activity.window.decorView as ViewGroup
 
         var decorChild = (decor getChildAt 0) as LinearLayout
 
         // get origin activity view see http://blog.csdn.net/sunny2come/article/details/8899138
         var contentFrame = decorChild.getChildAt(1) as FrameLayout
         val contentView = contentFrame.getChildAt(0)
-        contentView setBackgroundColor activity.getResources().getColor(android.R.color.white)
+        contentView setBackgroundColor activity.resources.getColor(android.R.color.white)
         // add slidingpanellayout between decor decor view and origin activity view
-        slidingPaneLayout.setLayoutParams(contentView.getLayoutParams())
+        slidingPaneLayout.layoutParams = contentView.layoutParams
         decorChild removeView contentFrame
         contentFrame removeView contentView
         slidingPaneLayout.addView(contentView, 1)
@@ -94,7 +94,7 @@ public class SwipeBackActivityHelper(val activity: Activity) {
     }
 
     public fun afterSwipeFinish() {
-        cleanScreenShot(fileName, activity.getApplicationContext())
+        cleanScreenShot(fileName, activity.applicationContext)
         activity.overridePendingTransition(0, R.anim.slide_out_right_slow);
         //  var decor = activity.getWindow().getDecorView() as ViewGroup
         // var decorChild = (decor getChildAt 0) as LinearLayout
@@ -103,14 +103,14 @@ public class SwipeBackActivityHelper(val activity: Activity) {
     }
 
     public fun disableSwipeBack() {
-        var decor = activity.getWindow().getDecorView() as ViewGroup
+        var decor = activity.window.decorView as ViewGroup
         var decorChild = (decor getChildAt 0) as LinearLayout
         val slideView = decorChild.getChildAt(1) as SlideView
         slideView.disallowIntercept = true
     }
 
     public fun enableSwipeBack() {
-        var decor = activity.getWindow().getDecorView() as ViewGroup
+        var decor = activity.window.decorView as ViewGroup
         var decorChild = (decor getChildAt 0) as LinearLayout
         val slideView = decorChild.getChildAt(1) as SlideView
         slideView.disallowIntercept = false
@@ -124,7 +124,7 @@ public fun startSwipeActivity(activity: Activity, activityCls:Class<*>) {
 
 public fun startSwipeActivity(activity: Activity, intent:Intent) {
     //        activity.overridePendingTransition(0, R.anim.slide_out_right)
-    saveView(activity, activity.getWindow().getDecorView())
+    saveView(activity, activity.window.decorView)
     intent.putExtra("^^hash$$", activity.hashCode())
     //        startActivity(intent)
     activity.startActivity(intent)
@@ -134,7 +134,7 @@ public fun startSwipeActivity(activity: Activity, intent:Intent) {
 
 private val cachedScreenShot = object :LruCache<String, Bitmap>((Runtime.getRuntime().maxMemory()/8L).toInt()) {
     override fun sizeOf(key: String?, value: Bitmap?): Int {
-        return value!!.getRowBytes() * value!!.getHeight()
+        return value!!.rowBytes * value.height
     }
 }
 
@@ -142,7 +142,7 @@ private val activityHashList = ArrayList<String>()
 
 private fun cleanScreenShot(fileName:String, context: Context) {
     removeUnusedFiles(context)
-    if (fileName.equals("")) return
+    if (fileName.isNullOrEmpty()) return
     cachedScreenShot.remove(fileName)
     val screenShotFile = File(fileName)
     if (screenShotFile.exists()) {
@@ -152,7 +152,7 @@ private fun cleanScreenShot(fileName:String, context: Context) {
     }
 }
 private fun removeUnusedFiles(context: Context) {
-    val dir = context.getApplicationContext().getFilesDir().getAbsolutePath()
+    val dir = context.applicationContext.filesDir.absolutePath
     val files = File(dir).listFiles()
     for (file in files) {
         var isUsed = false
@@ -169,16 +169,16 @@ private fun removeUnusedFiles(context: Context) {
 }
 
 private fun saveView(context: Context, decorView: View) {
-    val rootView = decorView.getRootView()
-    rootView.setDrawingCacheEnabled(true)
+    val rootView = decorView.rootView
+    rootView.isDrawingCacheEnabled = true
     rootView.buildDrawingCache()
     runAsync {
-        val bitmap = rootView.getDrawingCache() ?: return@runAsync
+        val bitmap = rootView.drawingCache ?: return@runAsync
         val hashCode = context.hashCode()
         val fileName = getFileName(context,hashCode)
         val out = FileOutputStream(fileName)
-        val w = bitmap.getWidth()
-        val h = bitmap.getHeight()
+        val w = bitmap.width
+        val h = bitmap.height
         var frame = Rect()
         decorView.getWindowVisibleDisplayFrame(frame)
         val statusHeight = frame.top
@@ -186,11 +186,11 @@ private fun saveView(context: Context, decorView: View) {
         cachedScreenShot.put(fileName, finalBitmap)
         activityHashList.add(hashCode.toString())
         finalBitmap.compress(Bitmap.CompressFormat.PNG,100, out)
-        rootView.setDrawingCacheEnabled(false)
+        rootView.isDrawingCacheEnabled = false
     }
 }
 
 private fun getFileName(context: Context, index:Int) :String {
-    return  "${context.getApplicationContext().getFilesDir().getAbsolutePath()}/swipeback@${index}.png"
+    return  "${context.applicationContext.filesDir.absolutePath}/swipeback@$index.png"
 }
 
