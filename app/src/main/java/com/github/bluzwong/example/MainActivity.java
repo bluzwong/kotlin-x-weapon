@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import com.github.bluzwong.example.swipeback.VPAdapter;
-import com.github.bluzwong.kotlin_x_weapon.Kotlin_x_weaponPackage;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Kotlin_x_weaponPackage.startActivity(MainActivity.this, MainActivity.this.getClass());
+                //Kotlin_x_weaponPackage.startActivity(MainActivity.this, MainActivity.this.getClass());
+                helper.onStartNewActivity(MainActivity.class);
             }
         });
 
@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         vp = (ViewPager) findViewById(R.id.vp);
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
