@@ -51,6 +51,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
   //  compile "org.jetbrains.kotlin:kotlin-stdlib:0.12.613"
    // compile "org.jetbrains.kotlin:kotlin-stdlib:0.12.1230"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

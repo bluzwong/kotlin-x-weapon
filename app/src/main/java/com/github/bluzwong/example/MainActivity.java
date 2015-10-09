@@ -2,11 +2,16 @@ package com.github.bluzwong.example;
 
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.github.bluzwong.example.swipeback.VPAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import com.github.bluzwong.swipeback.App;
 import com.github.bluzwong.swipeback.SwipeBackActivityHelper;
 
 import java.util.ArrayList;
@@ -25,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
         helper.setDebuggable(true);
         helper.init(this);
         initViews();
+        App.requestQueue.add(new StringRequest("http://www.baidu.com", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("volley-test", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }));
     }
 
     private void initViews() {
