@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.support.v4.widget.SlidingPaneLayout
+import android.util.LruCache
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -16,27 +17,15 @@ import com.github.bluzwong.kotlin_x_weapon.swipeback.SlideView
 import com.github.bluzwong.kotlin_x_weapon.swipeback.SwipeLeftView
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.Deprecated
 import java.util.*
 
 /**
  * Created by Bruce-Home on 2015/9/15.
  */
 public class SwipeBackActivityHelper(val activity: Activity) {
-
-    public fun onStartNewActivity(activityCls:Class<*>) {
-//        activity.overridePendingTransition(0, R.anim.slide_out_right)
-        val activity = activity
-        saveView(activity, activity.getWindow().getDecorView())
-        val intent = Intent(activity, activityCls)
-        intent.putExtra("^^hash$$", activity.hashCode())
-//        startActivity(intent)
-        activity.startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.keep)
-//        activity.overridePendingTransition(R.anim.slide_in_from_bottom,R.anim.slide_out_right);
-    }
-
+    private var fileName = ""
     public  fun initSwipeBack() {
-        var fileName = ""
         val hash = activity.getIntent().getIntExtra("^^hash$$", 0)
         if (hash != 0) {
             fileName = getFileName(activity, hash)
@@ -45,21 +34,26 @@ public class SwipeBackActivityHelper(val activity: Activity) {
         val field_overHandSize = javaClass<SlidingPaneLayout>().getDeclaredField("mOverhangSize")
         field_overHandSize setAccessible true
         field_overHandSize.set(slidingPaneLayout, 0)
-        //        var leftView = LeftView(activity)
         var leftView = SwipeLeftView(activity)
-        //        leftView setBackgroundColor Color.WHITE
         leftView setLayoutParams ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         slidingPaneLayout setPanelSlideListener object : SlidingPaneLayout.PanelSlideListener {
             override fun onPanelSlide(panel: View?, slideOffset: Float) {
                 if (!fileName.equals("") && leftView.getTag() == null) {
                     //                    fileName.i("img")
-                    val file = File(fileName)
-                    if (file.exists()) {
-                        val bitMap = BitmapFactory.decodeFile(fileName)
+                    var bitMap = cachedScreenShot.get(fileName)
+                    if (bitMap == null) {
+                        val file = File(fileName)
+                        if (file.exists()) {
+                            bitMap = BitmapFactory.decodeFile(fileName)
+                            cachedScreenShot.put(fileName, bitMap)
+                            //                        "bitmap create".i(swipeCount)
+                        }
+                    }
+                    if (bitMap != null) {
                         leftView.imgView.setImageBitmap(bitMap)
                         leftView.setTag(1)
-                        //                        "bitmap create".i(swipeCount)
                     }
+
                 }
                 leftView.shadowView.setX(panel!!.getX() - leftView.getWidth())
             }
@@ -71,6 +65,7 @@ public class SwipeBackActivityHelper(val activity: Activity) {
             }
 
             override fun onPanelOpened(panel: View?) {
+                cleanScreenShot(fileName)
                 activity.finish()
                 activity.overridePendingTransition(0, R.anim.slide_out_right)
             }
@@ -94,11 +89,17 @@ public class SwipeBackActivityHelper(val activity: Activity) {
         decorChild addView slidingPaneLayout
     }
 
+    @Deprecated
     public fun onSwipeFinish() {
+        afterSwipeFinish()
+    }
+
+    public fun afterSwipeFinish() {
+        cleanScreenShot(fileName)
         activity.overridePendingTransition(0, R.anim.slide_out_right_slow);
-      //  var decor = activity.getWindow().getDecorView() as ViewGroup
-       // var decorChild = (decor getChildAt 0) as LinearLayout
-//        val slideView = decorChild.getChildAt(1) as SlideView
+        //  var decor = activity.getWindow().getDecorView() as ViewGroup
+        // var decorChild = (decor getChildAt 0) as LinearLayout
+        //        val slideView = decorChild.getChildAt(1) as SlideView
         //slideView.openPane() //todo 不知道有什么用
     }
 
@@ -117,7 +118,38 @@ public class SwipeBackActivityHelper(val activity: Activity) {
     }
 }
 
-public fun saveView(context: Context, decorView: View) {
+public fun startSwipeActivity(activity: Activity, activityCls:Class<*>) {
+    //        activity.overridePendingTransition(0, R.anim.slide_out_right)
+    startSwipeActivity(activity, Intent(activity, activityCls))
+}
+
+public fun startSwipeActivity(activity: Activity, intent:Intent) {
+    //        activity.overridePendingTransition(0, R.anim.slide_out_right)
+    saveView(activity, activity.getWindow().getDecorView())
+    intent.putExtra("^^hash$$", activity.hashCode())
+    //        startActivity(intent)
+    activity.startActivity(intent)
+    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.keep)
+    //        activity.overridePendingTransition(R.anim.slide_in_from_bottom,R.anim.slide_out_right);
+}
+
+private val cachedScreenShot = object :LruCache<String, Bitmap>((Runtime.getRuntime().maxMemory()/8L).toInt()) {
+    override fun sizeOf(key: String?, value: Bitmap?): Int {
+        return value!!.getRowBytes() * value!!.getHeight()
+    }
+}
+
+private fun cleanScreenShot(fileName:String) {
+    if (fileName.equals("")) return
+    cachedScreenShot.remove(fileName)
+    val screenShotFile = File(fileName)
+    if (screenShotFile.exists()) {
+        runAsync {
+            screenShotFile.delete()
+        }
+    }
+}
+private fun saveView(context: Context, decorView: View) {
     val rootView = decorView.getRootView()
     rootView.setDrawingCacheEnabled(true)
     rootView.buildDrawingCache()
@@ -130,12 +162,14 @@ public fun saveView(context: Context, decorView: View) {
         var frame = Rect()
         decorView.getWindowVisibleDisplayFrame(frame)
         val statusHeight = frame.top
-        Bitmap.createBitmap(bitmap, 0, statusHeight, w, h - statusHeight).compress(Bitmap.CompressFormat.PNG,100, out)
+        val finalBitmap = Bitmap.createBitmap(bitmap, 0, statusHeight, w, h - statusHeight)
+        cachedScreenShot.put(fileName, finalBitmap)
+        finalBitmap.compress(Bitmap.CompressFormat.PNG,100, out)
         rootView.setDrawingCacheEnabled(false)
     }
 }
 
-public fun getFileName(context: Context, index:Int) :String {
+private fun getFileName(context: Context, index:Int) :String {
     return  "${context.getApplicationContext().getFilesDir().getAbsolutePath()}/swipeback@${index}.png"
 }
 

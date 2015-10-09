@@ -1,5 +1,6 @@
 package com.github.bluzwong.example;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -7,7 +8,9 @@ import com.github.bluzwong.example.swipeback.VPAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import com.github.bluzwong.kotlin_x_weapon.Kotlin_x_weaponPackage;
 import com.github.bluzwong.kotlin_x_weapon.SwipeBackActivityHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Kotlin_x_weaponPackage.startActivity(MainActivity.this, MainActivity.this.getClass());
-                helper.onStartNewActivity(MainActivity.class);
+                Kotlin_x_weaponPackage.startSwipeActivity(MainActivity.this, MainActivity.class);
             }
         });
 
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         // 3.show animation when back
-        helper.onSwipeFinish();
+        helper.afterSwipeFinish();
         // 4.set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
     }
 
