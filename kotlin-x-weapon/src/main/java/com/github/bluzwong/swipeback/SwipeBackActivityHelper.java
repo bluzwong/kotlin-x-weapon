@@ -30,11 +30,11 @@ public class SwipeBackActivityHelper {
     private Activity activity;
     private SwipeBackView swipeBackView;
     private int hashCode = 0;
+    private String fileName = "";
+
     public SwipeBackActivityHelper(Activity activity) {
         this.activity = activity;
     }
-
-    private String fileName = "";
 
     public void init() {
         final int screenShotHashCode = activity.getIntent().getIntExtra("^^hash$$", 0);
@@ -90,10 +90,9 @@ public class SwipeBackActivityHelper {
             View contentView = contentFrame.getChildAt(0);
             contentView.setBackgroundColor(Color.WHITE);
             swipeBackView.setLayoutParams(contentView.getLayoutParams());
-            decorChild.removeView(contentFrame);
             contentFrame.removeView(contentView);
             swipeBackView.addView(contentView , 1);
-            decorChild.addView(swipeBackView);
+            contentFrame.addView(swipeBackView);
 
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -111,21 +110,15 @@ public class SwipeBackActivityHelper {
     }
 
     public void disableSwipeBack() {
-        getSwipeBackView().disallowIntercept = true;
+        swipeBackView.disallowIntercept = true;
     }
 
     public void enableSwipeBack() {
-        getSwipeBackView().disallowIntercept = false;
+        swipeBackView.disallowIntercept = false;
     }
 
     private ViewGroup getDecorView() {
         return (ViewGroup) activity.getWindow().getDecorView();
-    }
-
-    private SwipeBackView getSwipeBackView() {
-        return swipeBackView;
-        /*LinearLayout decorChild = (LinearLayout) getDecorView().getChildAt(0);
-        return ((SwipeBackView) decorChild.getChildAt(1));*/
     }
 
     public static void startSwipeActivity(Activity activity, Class cls) {
