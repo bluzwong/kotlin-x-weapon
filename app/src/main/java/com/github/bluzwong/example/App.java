@@ -1,4 +1,4 @@
-package com.github.bluzwong.swipeback;
+package com.github.bluzwong.example;
 
 import android.app.Application;
 import com.android.volley.RequestQueue;

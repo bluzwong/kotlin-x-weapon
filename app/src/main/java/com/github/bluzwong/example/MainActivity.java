@@ -11,7 +11,6 @@ import com.github.bluzwong.example.swipeback.VPAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import com.github.bluzwong.swipeback.App;
 import com.github.bluzwong.swipeback.SwipeBackActivityHelper;
 
 import java.util.ArrayList;
