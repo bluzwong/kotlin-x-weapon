@@ -14,7 +14,7 @@ public class ShadowView extends View {
         super(context);
     }
 
-    private final static int SHADOW_WIDTH = 80;
+    private final static int SHADOW_WIDTH = 50;
 
     private Drawable leftShadow;
     @Override

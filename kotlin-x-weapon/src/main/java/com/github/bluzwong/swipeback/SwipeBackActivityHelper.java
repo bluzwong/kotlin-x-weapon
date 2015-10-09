@@ -140,7 +140,7 @@ public class SwipeBackActivityHelper {
         return (ViewGroup) activity.getWindow().getDecorView();
     }
 
-    public void setDebugable(boolean needDebug) {
+    public void setDebuggable(boolean needDebug) {
         debug = needDebug;
     }
 

@@ -1,6 +1,5 @@
 package com.github.bluzwong.example;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 2.helper init
-        helper.setDebugable(true);
+        helper.setDebuggable(true);
         helper.init();
         initViews();
     }
