@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Kotlin_x_weaponPackage.startActivity(MainActivity.this, MainActivity.this.getClass());
-//                SwipebackPackage.startSwipeActivity(MainActivity.this, MainActivity.class);
                 SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, MainActivity.class);
             }
         });
@@ -55,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                // 5. when some views conflict with swipe back , you should do these, for example:
+                // 4. when some views conflict with swipe back , you should do these, for example:
                 if (position != 0) {
                     // if the current view page is not the first, make 'vp' receive touch event.
                     helper.disableSwipeBack();
@@ -77,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         super.finish();
         // 3.show animation when back
         helper.afterFinish();
-        // 4.set activity theme see AndroidManifest -> android:theme="@style/BluzWong.SwipeBack.Transparent.Theme"
     }
 
     public static String getRandColorCode() {

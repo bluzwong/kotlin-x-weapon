@@ -58,7 +58,9 @@ public class SwipeBackActivityHelper {
             swipeBackView.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
                 @Override
                 public void onPanelSlide(View view, float v) {
-                    leftView.shadowView.setX(view.getX() - leftView.getWidth());
+                    float x = view.getX() - leftView.getWidth();
+                    logD(" set x = " + x);
+                    leftView.shadowView.setX(x);
                     if (!TextUtils.isEmpty(fileName) && leftView.getTag() == null) {
                         Bitmap bitmap = cachedScreenShot.get(fileName);
                         if (bitmap == null) {
@@ -101,12 +103,13 @@ public class SwipeBackActivityHelper {
             ViewGroup decorView = getDecorView();
             LinearLayout decorChild = (LinearLayout) decorView.getChildAt(0);
             FrameLayout contentFrame = (FrameLayout) decorChild.getChildAt(1);
-            View contentView = contentFrame.getChildAt(0);
-            contentView.setBackgroundColor(Color.WHITE);
-            swipeBackView.setLayoutParams(contentView.getLayoutParams());
-            contentFrame.removeView(contentView);
-            swipeBackView.addView(contentView, 1);
-            contentFrame.addView(swipeBackView);
+            //View contentView = contentFrame.getChildAt(0);
+            contentFrame.setBackgroundColor(Color.WHITE);
+            swipeBackView.setLayoutParams(contentFrame.getLayoutParams());
+            //contentFrame.removeView(contentView);
+            decorChild.removeView(contentFrame);
+            swipeBackView.addView(contentFrame, 1);
+            decorChild.addView(swipeBackView);
             logD("init ok");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
