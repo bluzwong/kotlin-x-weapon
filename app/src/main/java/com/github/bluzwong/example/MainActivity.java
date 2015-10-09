@@ -8,8 +8,8 @@ import com.github.bluzwong.example.swipeback.VPAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import com.github.bluzwong.kotlin_x_weapon.Kotlin_x_weaponPackage;
-import com.github.bluzwong.kotlin_x_weapon.SwipeBackActivityHelper;
+import com.github.bluzwong.kotlin_x_weapon.swipeback.SwipebackPackage;
+import com.github.bluzwong.kotlin_x_weapon.swipeback.SwipeBackActivityHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Kotlin_x_weaponPackage.startActivity(MainActivity.this, MainActivity.this.getClass());
-                Kotlin_x_weaponPackage.startSwipeActivity(MainActivity.this, MainActivity.class);
+                SwipebackPackage.startSwipeActivity(MainActivity.this, MainActivity.class);
             }
         });
 
@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
         vp.setAdapter(adapter);
     }

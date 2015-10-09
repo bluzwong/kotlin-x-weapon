@@ -1,4 +1,4 @@
-package com.github.bluzwong.kotlin_x_weapon
+package com.github.bluzwong.kotlin_x_weapon.swipeback
 
 import android.app.Activity
 import android.content.Context
@@ -13,8 +13,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.github.bluzwong.kotlin_x_weapon.R
-import com.github.bluzwong.kotlin_x_weapon.swipeback.SlideView
-import com.github.bluzwong.kotlin_x_weapon.swipeback.SwipeLeftView
+import com.github.bluzwong.kotlin_x_weapon.runAsync
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.Deprecated
@@ -65,7 +64,7 @@ public class SwipeBackActivityHelper(val activity: Activity) {
             }
 
             override fun onPanelOpened(panel: View?) {
-                cleanScreenShot(fileName)
+                cleanScreenShot(fileName, activity.getApplicationContext())
                 activity.finish()
                 activity.overridePendingTransition(0, R.anim.slide_out_right)
             }
@@ -95,7 +94,7 @@ public class SwipeBackActivityHelper(val activity: Activity) {
     }
 
     public fun afterSwipeFinish() {
-        cleanScreenShot(fileName)
+        cleanScreenShot(fileName, activity.getApplicationContext())
         activity.overridePendingTransition(0, R.anim.slide_out_right_slow);
         //  var decor = activity.getWindow().getDecorView() as ViewGroup
         // var decorChild = (decor getChildAt 0) as LinearLayout
@@ -139,7 +138,10 @@ private val cachedScreenShot = object :LruCache<String, Bitmap>((Runtime.getRunt
     }
 }
 
-private fun cleanScreenShot(fileName:String) {
+private val activityHashList = ArrayList<String>()
+
+private fun cleanScreenShot(fileName:String, context: Context) {
+    removeUnusedFiles(context)
     if (fileName.equals("")) return
     cachedScreenShot.remove(fileName)
     val screenShotFile = File(fileName)
@@ -149,13 +151,31 @@ private fun cleanScreenShot(fileName:String) {
         }
     }
 }
+private fun removeUnusedFiles(context: Context) {
+    val dir = context.getApplicationContext().getFilesDir().getAbsolutePath()
+    val files = File(dir).listFiles()
+    for (file in files) {
+        var isUsed = false
+        for (hash in activityHashList) {
+            if (hash in file.name) {
+                isUsed = true
+                break
+            }
+        }
+        if (!isUsed) {
+            file.delete()
+        }
+    }
+}
+
 private fun saveView(context: Context, decorView: View) {
     val rootView = decorView.getRootView()
     rootView.setDrawingCacheEnabled(true)
     rootView.buildDrawingCache()
     runAsync {
         val bitmap = rootView.getDrawingCache() ?: return@runAsync
-        val fileName = getFileName(context,context.hashCode())
+        val hashCode = context.hashCode()
+        val fileName = getFileName(context,hashCode)
         val out = FileOutputStream(fileName)
         val w = bitmap.getWidth()
         val h = bitmap.getHeight()
@@ -164,6 +184,7 @@ private fun saveView(context: Context, decorView: View) {
         val statusHeight = frame.top
         val finalBitmap = Bitmap.createBitmap(bitmap, 0, statusHeight, w, h - statusHeight)
         cachedScreenShot.put(fileName, finalBitmap)
+        activityHashList.add(hashCode.toString())
         finalBitmap.compress(Bitmap.CompressFormat.PNG,100, out)
         rootView.setDrawingCacheEnabled(false)
     }
