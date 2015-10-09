@@ -6,6 +6,7 @@ import com.github.bluzwong.example.recyclerview.XRecyclerViewActivity
 import com.github.bluzwong.kotlin_x_weapon
 import com.github.bluzwong.kotlin_x_weapon.startActivityEx
 import com.github.bluzwong.kotlin_x_weapon.swipeback.startSwipeActivity
+import com.github.bluzwong.swipeback.SwipeBackActivityHelper
 
 /**
  * Created by wangzhijie@wind-mobi.com on 2015/9/16.
@@ -15,7 +16,8 @@ public class RootActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_root)
         findViewById(R.id.btn).setOnClickListener {
-            startSwipeActivity(this, javaClass<MainActivity>())
+            SwipeBackActivityHelper.startSwipeActivity(this, MainActivity::class.java)
+//            startSwipeActivity(this, javaClass<MainActivity>())
         }
         findViewById(R.id.btn2).setOnClickListener {
             startActivityEx(javaClass<XRecyclerViewActivity>())
