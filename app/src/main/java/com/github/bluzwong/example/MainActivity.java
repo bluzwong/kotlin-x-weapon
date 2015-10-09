@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     // 1.get helper
-    SwipeBackActivityHelper helper = new SwipeBackActivityHelper(this);
+    SwipeBackActivityHelper helper = new SwipeBackActivityHelper();
     ViewPager vp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 2.helper init
         helper.setDebuggable(true);
-        helper.init();
+        helper.init(this);
         initViews();
     }
 
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 0. use this method to start the activity that need swipe back
                 SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, MainActivity.class);
             }
         });
@@ -70,10 +71,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        // 3.show animation when back
-        helper.afterFinish();
+    public void onBackPressed() {
+        // 3. handle back pressed, show animation
+        helper.finish();
     }
 
     public static String getRandColorCode() {

@@ -16,8 +16,8 @@ public class RootActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_root)
         findViewById(R.id.btn).setOnClickListener {
+
             SwipeBackActivityHelper.startSwipeActivity(this, MainActivity::class.java)
-//            startSwipeActivity(this, javaClass<MainActivity>())
         }
         findViewById(R.id.btn2).setOnClickListener {
             startActivityEx(javaClass<XRecyclerViewActivity>())

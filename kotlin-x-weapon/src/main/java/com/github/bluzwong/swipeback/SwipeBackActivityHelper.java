@@ -35,11 +35,9 @@ public class SwipeBackActivityHelper {
     private String fileName = "";
     private static boolean debug = false;
 
-    public SwipeBackActivityHelper(Activity activity) {
-        this.activity = activity;
-    }
 
-    public void init() {
+    public void init(final Activity activity) {
+        this.activity = activity;
         final int screenShotHashCode = activity.getIntent().getIntExtra("^^hash$$", 0);
         if (screenShotHashCode != 0) {
             hashCode = screenShotHashCode;
@@ -89,6 +87,10 @@ public class SwipeBackActivityHelper {
                     removeScreenShot(activity, screenShotHashCode);
                     activity.finish();
                     activity.overridePendingTransition(0, R.anim.slide_out_right);
+                    if (hashCode != 0) {
+                        logD("after finish, start remove screen shot " + hashCode);
+                        removeScreenShot(activity, hashCode);
+                    }
                 }
 
                 @Override
@@ -118,12 +120,8 @@ public class SwipeBackActivityHelper {
 
     }
 
-    public void afterFinish() {
-        if (hashCode != 0) {
-            logD("after finish, start remove screen shot " + hashCode);
-            removeScreenShot(activity, hashCode);
-        }
-        activity.overridePendingTransition(0, R.anim.slide_out_right_slow);
+    public void finish() {
+        swipeBackView.openPane();
     }
 
     public void disableSwipeBack() {
