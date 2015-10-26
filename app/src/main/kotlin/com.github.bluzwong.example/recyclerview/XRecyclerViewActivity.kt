@@ -5,7 +5,6 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.ViewGroup
-import com.github.bluzwong.example
 import com.github.bluzwong.example.R
 import com.github.bluzwong.kotlin_x_weapon.XRecyclerView
 import com.github.bluzwong.kotlin_x_weapon.runDelayed

@@ -7,7 +7,6 @@ import com.github.bluzwong.example.swipeback.VPAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import com.github.bluzwong.swipeback.SwipeBackActivityHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +14,12 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     // 1.get helper
-    SwipeBackActivityHelper helper = new SwipeBackActivityHelper();
     ViewPager vp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 2.helper init
-        helper.setDebuggable(true);
-        helper.init(this);
         initViews();
     }
 
@@ -33,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 0. use this method to start the activity that need swipe back
-                SwipeBackActivityHelper.startSwipeActivity(MainActivity.this, MainActivity.class);
             }
         });
 
@@ -56,10 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 // 4. when some views conflict with swipe back , you should do these, for example:
                 if (position != 0) {
                     // if the current view page is not the first, make 'vp' receive touch event.
-                    helper.disableSwipeBack();
                 } else {
                     // the current page return to the first one, make 'swipe back' receive touch event.
-                    helper.enableSwipeBack();
                 }
             }
 
@@ -73,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // 3. handle back pressed, show animation
-        helper.finish();
     }
 
     public static String getRandColorCode() {

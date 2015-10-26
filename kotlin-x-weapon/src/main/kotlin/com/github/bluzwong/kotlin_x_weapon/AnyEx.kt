@@ -5,37 +5,37 @@ import android.util.Log
 /**
  * Created by Bruce-Home on 2015/9/2.
  */
-public fun T.v<T>(msg: Any = ""): T {
+public fun <T> T.v(msg: Any = ""): T {
     var info = formatLogInfo()
     Log.v(info[0], "${info[1]}${this.toString()}${info[2]} msg: ${msg}\n${info[3]}")
     return this
 }
 
-public fun T.d<T>(msg: Any = ""): T {
+public fun <T> T.d(msg: Any = ""): T {
     var info = formatLogInfo()
     Log.d(info[0], "${info[1]}${this.toString()}${info[2]} msg: ${msg}\n${info[3]}")
     return this
 }
 
-public fun T.i<T>(msg: Any = ""): T {
+public fun <T> T.i(msg: Any = ""): T {
     var info = formatLogInfo()
     Log.i(info[0], "${info[1]}${this.toString()}${info[2]} msg: ${msg}\n${info[3]}")
     return this
 }
 
-public fun T.w<T>(msg: Any = ""): T {
+public fun <T> T.w(msg: Any = ""): T {
     var info = formatLogInfo()
     Log.w(info[0], "${info[1]}${this.toString()}${info[2]} msg: ${msg}\n${info[3]}")
     return this
 }
 
-public fun T.e<T>(msg: Any = ""): T {
+public fun <T> T.e(msg: Any = ""): T {
     var info = formatLogInfo()
     Log.e(info[0], "${info[1]}${this.toString()}${info[2]} msg: ${msg}\n${info[3]}")
     return this
 }
 
-public fun T.wtf<T>(msg: Any = ""): T {
+public fun <T> T.wtf(msg: Any = ""): T {
     var info = formatLogInfo()
     Log.wtf(info[0], "${info[1]}${this.toString()}${info[2]} msg: ${msg}\n${info[3]}")
     return this

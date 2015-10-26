@@ -35,9 +35,6 @@ import android.preference.PreferenceManager
 import android.print.PrintManager
 import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityManager
 import android.view.accessibility.CaptioningManager
@@ -50,25 +47,25 @@ import com.github.bluzwong.kotlin_x_weapon.toastLong
  * Created by Bruce on 15/9/3.
  */
 
-public fun T.toast<T: Context>(msg:String): T {
-    msg toast this
+public fun <T: Context> T.toast(msg:String): T {
+    msg.toast(this)
     return this
 }
 
-public fun T.toastLong<T: Context>(msg:String): T {
-    msg toastLong  this
+public fun <T: Context> T.toastLong(msg:String): T {
+    msg.toastLong(this)
     return this
 }
 
-public fun T.inflat<T: Context>(layoutResId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View
+public fun <T: Context> T.inflat(layoutResId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View
         = LayoutInflater.from(this).inflate(layoutResId, parent, attachToRoot)
 
 
 public fun startActivity(activity:Activity, cls:Class<*>) {
-    activity startActivity Intent(activity, cls)
+    activity.startActivity(Intent(activity, cls))
 }
 public fun Activity.startActivityEx(cls:Class<*>) {
-    this startActivity Intent(this, cls)
+    this.startActivity(Intent(this, cls))
 }
 
 public fun Context.getAccessibilityManager(): AccessibilityManager = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
