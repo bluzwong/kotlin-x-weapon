@@ -135,4 +135,24 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
             false
         }
     }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder?) {
+        super.onViewAttachedToWindow(holder)
+        val params = holder!!.itemView.layoutParams
+        if (params != null && params is StaggeredGridLayoutManager.LayoutParams
+                && holder.layoutPosition == itemCount - 1) {
+            params.isFullSpan = true
+        }
+
+        val manager = recyclerView.layoutManager
+        when (manager) {
+            is GridLayoutManager -> {
+                manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (getItemViewType(position) == autoLoadMore) manager.spanCount else 1
+                    }
+                }
+            }
+        }
+    }
 }
