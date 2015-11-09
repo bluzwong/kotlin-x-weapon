@@ -21,66 +21,100 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
     private val adapter = anyAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
     private val autoLoadMore = layoutResId
     private var loadingView: View? = null
+    private var loadingHolder:EndViewHolder?=null
 
-    private val STATUS_INIT: Int = 0
-    private val STATUS_IS_LOADING: Int = 1
-    private val STATUS_LOAD_FINISH: Int = 2
-    private val STATUS_NO_MORE: Int = 3
-    private var loadingStatus: Int = STATUS_INIT
+    public val STATUS_NORMAL: Int = 0
+    public val STATUS_IS_LOADING: Int = 1
+    public val STATUS_SHOW_CLICK: Int = 2
+    public val STATUS_NO_MORE: Int = 3
+    public val STATUS_NORMAL_LOADING: Int = 4
+    public val STATUS_DISABLE = -1
+
+    private  var currentStatus = STATUS_NORMAL
+        set(value) {
+            field = if (value in -1..4) value else -1
+            if (loadingHolder != null) {
+                syncStatus(loadingHolder!!)
+            }
+        }
 
     public fun loadFinish() {
-        loadingStatus = STATUS_LOAD_FINISH
-        //notifyDataSetChanged()
+        currentStatus = STATUS_NORMAL
     }
 
-    public fun noMore() {
-        loadingStatus = STATUS_NO_MORE
+    public fun setEnable(enable:Boolean) {
+        currentStatus = if (enable) STATUS_NORMAL else STATUS_DISABLE
+        refreshHolder()
+        syncStatus(loadingHolder!!)
     }
 
-    public fun reset() {
-        loadingStatus = STATUS_INIT
+    fun syncStatus(holder: EndViewHolder) {
+        when (currentStatus) {
+            STATUS_IS_LOADING -> {
+                holder.pbLoading.visibility = View.VISIBLE
+                holder.tvClick.visibility = View.GONE
+            }
+
+            STATUS_SHOW_CLICK -> {
+                holder.pbLoading.visibility = View.GONE
+                holder.tvClick.visibility = View.VISIBLE
+            }
+
+            STATUS_NO_MORE, STATUS_NORMAL, STATUS_DISABLE -> {
+                holder.pbLoading.visibility = View.GONE
+                holder.tvClick.visibility = View.GONE
+            }
+        }
+    }
+
+    fun refreshHolder() {
+        if((currentStatus == STATUS_NORMAL || currentStatus == STATUS_SHOW_CLICK)) {
+            if (findLastInScreen() <= adapter.itemCount && findFirstInScreen() == 0) {
+                currentStatus = STATUS_SHOW_CLICK
+            } else {
+                currentStatus = STATUS_NORMAL_LOADING
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        if (!isLoadingView(position)) {
+        if (holder is EndViewHolder) {
+            refreshHolder()
+        } else {
             adapter.onBindViewHolder(holder, position)
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         return if (viewType == autoLoadMore) {
             loadingView = inflater.inflate(viewType, parent, false)
-            loadingView!!.setVisibility(View.GONE)
-            EndViewHolder(loadingView!!)
+            val holder = EndViewHolder(loadingView!!)
+            holder.itemView.setOnClickListener {
+                if (currentStatus == STATUS_SHOW_CLICK) {
+                    currentStatus = STATUS_IS_LOADING
+                    loadingFunc!!.invoke()
+                }
+            }
+            loadingHolder = holder
+            holder
         } else adapter.onCreateViewHolder(parent, viewType)
     }
 
     override fun getItemCount(): Int {
-        if (loadingStatus == STATUS_NO_MORE) {
-            return adapter.getItemCount()
-        }
-        return adapter.getItemCount() + 1
+        return adapter.itemCount + 1
     }
 
     private fun isLoadingView(position: Int): Boolean
-        = adapter.getItemCount() <= position
+        = position >= adapter.itemCount
 
     override fun getItemViewType(position: Int): Int {
-        if (findFirstInScreen() == 0 && findLastInScreen() >= adapter.getItemCount() - 1 && loadingStatus != STATUS_IS_LOADING) {
-            loadingView?.setVisibility(View.GONE)
-        }
-        if (findLastInScreen() >= getItemCount() - 2 && loadingView?.getVisibility() == View.VISIBLE && (loadingStatus == STATUS_LOAD_FINISH || loadingStatus == STATUS_INIT)) {
-            loadingStatus = STATUS_IS_LOADING
-            loadingFunc!!()
-        }
         return if (isLoadingView(position)) {
             autoLoadMore
-        } else adapter getItemViewType position
+        } else adapter.getItemViewType(position)
     }
 
     private fun findLastInScreen(): Int {
-        val manager = recyclerView.getLayoutManager()
+        val manager = recyclerView.layoutManager
         if (manager is LinearLayoutManager) {
             return manager.findLastCompletelyVisibleItemPosition()
         }
@@ -93,7 +127,7 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
 
 
     private fun findFirstInScreen(): Int {
-        val manager = recyclerView.getLayoutManager()
+        val manager = recyclerView.layoutManager
         if (manager is LinearLayoutManager) {
             return manager.findFirstCompletelyVisibleItemPosition()
         }
@@ -107,33 +141,21 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
     var loadingFunc:(() -> Unit)? = null
     public fun setOnLoadListener(remainingSize: Int = 6, pullRange:Int = 200, loadFunc: () -> Unit) {
         loadingFunc = loadFunc
-        recyclerView addOnScrollListener object : RecyclerView.OnScrollListener () {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener () {
             override fun onScrolled(rv: RecyclerView?, dx: Int, dy: Int) {
+                if (!(currentStatus == STATUS_NORMAL || currentStatus == STATUS_NORMAL_LOADING)) {
+                    return
+                }
                 var lastInScreen = findLastInScreen()
-                var adapterCount = getItemCount() - 1
+                var adapterCount = itemCount - 1
                 val needLoad = lastInScreen >= adapterCount - remainingSize
-                if (dy > 0 && needLoad && (loadingStatus == STATUS_LOAD_FINISH || loadingStatus == STATUS_INIT)) {
-                    loadingStatus = STATUS_IS_LOADING
-                    loadingView?.setVisibility(View.VISIBLE)
-                    loadFunc()
+                if (dy > 0 && needLoad) {
+                    currentStatus = STATUS_IS_LOADING
+                    //                    loadingView?.setVisibility(View.VISIBLE)
+                    loadingFunc!!()
                 }
             }
-        }
-        var initY = -1f
-        recyclerView.setOnTouchListener { view, motionEvent ->
-            when (motionEvent.getAction()) {
-                MotionEvent.ACTION_DOWN -> initY = motionEvent.getY()
-                MotionEvent.ACTION_MOVE -> {
-                    val newY = motionEvent.getY()
-                    if (initY - newY > pullRange && (loadingStatus == STATUS_LOAD_FINISH || loadingStatus == STATUS_INIT)) {
-                        loadingStatus = STATUS_IS_LOADING
-                        loadingView?.setVisibility(View.VISIBLE)
-                        loadFunc()
-                    }
-                }
-            }
-            false
-        }
+        })
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder?) {

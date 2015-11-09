@@ -19,7 +19,7 @@ public class XRecyclerViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_xrecyclerview)
 
-        for (item in 0..20) {
+        for (item in 0..2) {
             list add MainListItem(R.layout.listitem_main_activity, "test ${item}" + if (item % 3 == 0) "\n" else "")
         }
         adapter = MainAdapter(getLayoutInflater())
@@ -27,10 +27,13 @@ public class XRecyclerViewActivity : AppCompatActivity() {
         val main_recycler_view = findViewById(R.id.main_recycler_view) as XRecyclerView
         val endlessAdapter = EndlessAdapterWrapper(main_recycler_view, adapter!!, layoutInflater)
         endlessAdapter.setOnLoadListener {
-            runDelayed(1000) {
-                list add MainListItem(R.layout.listitem_main_activity, "test ${255}")
+            runDelayed(2222) {
+                for (item in 0..2) {
+                    list add MainListItem(R.layout.listitem_main_activity, "test $item" + if (item % 3 == 0) "\n" else "")
+                }
                 runOnUiThread {
                     endlessAdapter.loadFinish()
+                    endlessAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -43,12 +46,13 @@ public class XRecyclerViewActivity : AppCompatActivity() {
 
         val main_swipe_refresh = findViewById(R.id.main_swipe_refresh) as SwipeRefreshLayout
         main_swipe_refresh setOnRefreshListener {
-            runDelayed(1000) {
+            endlessAdapter.setEnable(false)
+            runDelayed(5555) {
                 //main_recycler_view.setAdapter(endlessAdapter)
+                endlessAdapter.setEnable(true)
                 main_recycler_view.startScheduleLayoutAnimation()
                 main_swipe_refresh setRefreshing false
             }
         }
     }
-
 }
