@@ -4,20 +4,19 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 /**
  * Created by wangzhijie@wind-mobi.com on 2015/9/9.
  */
-public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapter: Any, val inflater: LayoutInflater, val layoutResId: Int = R.layout.item_loading) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapter: RecyclerView.Adapter<*>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     init {
         recyclerView setAdapter this
     }
 
     private val adapter = anyAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>
-    private val autoLoadMore = layoutResId
+    private val autoLoadMore = R.layout.item_loading
     private var loadingView: View? = null
     private var loadingHolder:EndViewHolder?=null
 
@@ -36,13 +35,17 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
             }
         }
 
-    public fun loadFinish() {
+    public fun resetStatus() {
         currentStatus = STATUS_NORMAL
     }
 
+    public fun setStatusNoMore() {
+        currentStatus = STATUS_NO_MORE
+    }
+
     public fun setEnable(enable:Boolean) {
+        //refreshHolder()
         currentStatus = if (enable) STATUS_NORMAL else STATUS_DISABLE
-        refreshHolder()
         syncStatus(loadingHolder!!)
     }
 
@@ -85,7 +88,8 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         return if (viewType == autoLoadMore) {
-            loadingView = inflater.inflate(viewType, parent, false)
+
+            loadingView = recyclerView.context.getLayoutInflater().inflate(viewType, parent, false)
             val holder = EndViewHolder(loadingView!!)
             holder.itemView.setOnClickListener {
                 if (currentStatus == STATUS_SHOW_CLICK) {
