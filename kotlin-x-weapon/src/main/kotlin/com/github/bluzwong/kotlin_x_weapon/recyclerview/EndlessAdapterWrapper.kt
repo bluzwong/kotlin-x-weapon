@@ -68,9 +68,11 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
         }
     }
 
+    fun shouldShowClickInsteadOfLoading() : Boolean = findLastInScreen() <= adapter.itemCount && findFirstInScreen() == 0
+
     fun refreshHolder() {
         if((currentStatus == STATUS_NORMAL || currentStatus == STATUS_SHOW_CLICK)) {
-            if (findLastInScreen() <= adapter.itemCount && findFirstInScreen() == 0) {
+            if (shouldShowClickInsteadOfLoading()) {
                 currentStatus = STATUS_SHOW_CLICK
             } else {
                 currentStatus = STATUS_NORMAL_LOADING
@@ -117,30 +119,29 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
 
     private fun findLastInScreen(): Int {
         val manager = recyclerView.layoutManager
-        if (manager is LinearLayoutManager) {
-            return manager.findLastCompletelyVisibleItemPosition()
+        return when (manager) {
+            is LinearLayoutManager -> manager.findLastCompletelyVisibleItemPosition()
+            is GridLayoutManager -> manager.findLastCompletelyVisibleItemPosition()
+            is StaggeredGridLayoutManager -> manager.findLastCompletelyVisibleItemPositions(null).lastIndex
+            else -> -1
         }
-        if (manager is StaggeredGridLayoutManager) {
-            //return manager.findLastCompletelyVisibleItemPositions(null)[0]
-            return manager.findLastCompletelyVisibleItemPositions(null).lastIndex
-        }
-        return -1
     }
 
 
     private fun findFirstInScreen(): Int {
         val manager = recyclerView.layoutManager
-        if (manager is LinearLayoutManager) {
-            return manager.findFirstCompletelyVisibleItemPosition()
+        return when (manager) {
+            is LinearLayoutManager -> manager.findFirstCompletelyVisibleItemPosition()
+            is GridLayoutManager -> manager.findFirstCompletelyVisibleItemPosition()
+            is StaggeredGridLayoutManager -> manager.findFirstCompletelyVisibleItemPositions(null).lastIndex
+            else -> -1
         }
-        if (manager is StaggeredGridLayoutManager) {
-            //return manager.findFirstCompletelyVisibleItemPositions(null)[0]
-            return manager.findFirstCompletelyVisibleItemPositions(null).lastIndex
-        }
-        return -1
     }
 
     var loadingFunc:(() -> Unit)? = null
+
+    fun shouldShowLoading(remainingSize: Int = 6) : Boolean = findLastInScreen() >= itemCount - 1 - remainingSize
+
     public fun setOnLoadListener(remainingSize: Int = 6, loadFunc: () -> Unit) {
         loadingFunc = loadFunc
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener () {
@@ -148,10 +149,7 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
                 if (!(currentStatus == STATUS_NORMAL || currentStatus == STATUS_NORMAL_LOADING)) {
                     return
                 }
-                var lastInScreen = findLastInScreen()
-                var adapterCount = itemCount - 1
-                val needLoad = lastInScreen >= adapterCount - remainingSize
-                if (dy > 0 && needLoad) {
+                if (dy > 0 && shouldShowLoading(remainingSize)) {
                     currentStatus = STATUS_IS_LOADING
                     //                    loadingView?.setVisibility(View.VISIBLE)
                     loadingFunc!!()
