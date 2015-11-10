@@ -5,10 +5,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.github.bluzwong.kotlin_x_weapon.R
 
 /**
  * Created by wangzhijie@wind-mobi.com on 2015/9/9.
@@ -50,7 +48,7 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
 
     fun syncStatus(holder: EndViewHolder) {
         when (currentStatus) {
-            STATUS_IS_LOADING -> {
+            STATUS_IS_LOADING, STATUS_NORMAL_LOADING -> {
                 holder.pbLoading.visibility = View.VISIBLE
                 holder.tvClick.visibility = View.GONE
             }
@@ -139,7 +137,7 @@ public class EndlessAdapterWrapper(val recyclerView: RecyclerView, val anyAdapte
     }
 
     var loadingFunc:(() -> Unit)? = null
-    public fun setOnLoadListener(remainingSize: Int = 6, pullRange:Int = 200, loadFunc: () -> Unit) {
+    public fun setOnLoadListener(remainingSize: Int = 6, loadFunc: () -> Unit) {
         loadingFunc = loadFunc
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener () {
             override fun onScrolled(rv: RecyclerView?, dx: Int, dy: Int) {
